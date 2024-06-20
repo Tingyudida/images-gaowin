@@ -1,0 +1,32 @@
+name: Sync Docker Images
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-images:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+
+      - name: Login to Alibaba Cloud Registry
+        env:
+          ALIBABA_CLOUD_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+          USERNAME: ${{ secrets.ALIBABA_CLOUD_USERNAME }}
+          PASSWORD: ${{ secrets.ALIBABA_CLOUD_PASSWORD }}
+        run: |
+          echo $PASSWORD | docker login $ALIBABA_CLOUD_REGISTRY -u $USERNAME --password-stdin
+
+      - name: Use Skopeo Tools to Sync Images to Alibaba Cloud
+        run: |
+          skopeo copy docker://docker.io/library/mysql:8.0.33 docker://registry.cn-hangzhou.aliyuncs.com/godwin/mysql:8.0.33
+          skopeo copy docker://docker.io/library/redis:7.0.12 docker://registry.cn-hangzhou.aliyuncs.com/godwin/redis:7.0.12
