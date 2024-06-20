@@ -1,31 +1,35 @@
-name: Sync Image to Aliyun  Example
+name: Sync Docker Images
 
-on:
+on: 
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
+  sync-images:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Git pull
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3.2.0
+      - name: Set up Skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3.2.0
-      with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: gh2602877471
-        password: gh17669309349
-        logout: false
+      - name: Login to Alibaba Cloud Registry
+        env:
+          ALIBABA_CLOUD_REGISTRY: registry.cn-beijing.aliyuncs.com
+          USERNAME: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          PASSWORD: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+        run: |
+          echo $PASSWORD | docker login $ALIBABA_CLOUD_REGISTRY -u $USERNAME --password-stdin
 
-    - name: Use Skopeo Tools Sync Image to Docker Hub
-      run: |
-         skopeo copy docker://docker.io/hslr/sun-panel:1.4.0 docker://registry.cn-hangzhou.aliyuncs.com/godwin/sun-panel:1.4.0
-      # 使用 skopeo 工具将镜像同步到阿里云个人仓库中，使用时请自行源和目标修改仓库名称和镜像名称
+      - name: Use Skopeo Tools to Sync Images to Alibaba Cloud
+        run: |
+          skopeo copy docker://docker.io/library/mysql:8.0.33 docker://registry.cn-beijing.aliyuncs.com/godwin/mysql:8.0.33
+          skopeo copy docker://docker.io/library/redis:7.0.12 docker://registry.cn-beijing.aliyuncs.com/godwin/redis:7.0.12
+          skopeo copy docker://docker.io/library/nginx:latest docker://registry.cn-beijing.aliyuncs.com/godwin/nginx:latest
+          skopeo copy docker://docker.io/library/elasticsearch:7.6.1 docker://registry.cn-beijing.aliyuncs.com/godwin/elasticsearch:7.6.1
+          skopeo copy docker://docker.io/library/zookeeper:3.9.2 docker://registry.cn-beijing.aliyuncs.com/godwin/zookeeper:3.9.2
