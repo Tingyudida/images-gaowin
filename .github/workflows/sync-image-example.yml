@@ -29,8 +29,12 @@ jobs:
       - name: Use Skopeo Tools to Sync Images to Alibaba Cloud
         run: |
           skopeo copy docker://docker.io/library/mysql:8.0.33 docker://registry.cn-beijing.aliyuncs.com/godwin/mysql:8.0.33
+          skopeo copy docker://docker.io/library/mysql:5.7 docker://registry.cn-beijing.aliyuncs.com/godwin/mysql:5.7
+          skopeo copy docker://docker.io/library/mysql:latest docker://registry.cn-beijing.aliyuncs.com/godwin/mysql:latest
           skopeo copy docker://docker.io/library/redis:7.0.12 docker://registry.cn-beijing.aliyuncs.com/godwin/redis:7.0.12
           skopeo copy docker://docker.io/library/redis:latest docker://registry.cn-beijing.aliyuncs.com/godwin/redis:latest
           skopeo copy docker://docker.io/library/nginx:latest docker://registry.cn-beijing.aliyuncs.com/godwin/nginx:latest
           skopeo copy docker://docker.io/library/elasticsearch:7.6.1 docker://registry.cn-beijing.aliyuncs.com/godwin/elasticsearch:7.6.1
           skopeo copy docker://docker.io/library/zookeeper:3.9.2 docker://registry.cn-beijing.aliyuncs.com/godwin/zookeeper:3.9.2
+          skopeo copy docker://docker.io/library/rabbitmq:3.12 docker://registry.cn-beijing.aliyuncs.com/godwin/rabbitmq:3.12
+          skopeo copy docker://docker.io/library/rabbitmq:latest docker://registry.cn-beijing.aliyuncs.com/godwin/rabbitmq:latest
