@@ -21,8 +21,8 @@ jobs:
       - name: Login to Alibaba Cloud Registry
         env:
           ALIBABA_CLOUD_REGISTRY: registry.cn-hangzhou.aliyuncs.com
-          USERNAME: ${{ secrets.ALIBABA_CLOUD_USERNAME }}
-          PASSWORD: ${{ secrets.ALIBABA_CLOUD_PASSWORD }}
+          USERNAME: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+          PASSWORD: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
         run: |
           echo $PASSWORD | docker login $ALIBABA_CLOUD_REGISTRY -u $USERNAME --password-stdin
 
